@@ -10,7 +10,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @NoArgsConstructor
