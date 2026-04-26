@@ -2,8 +2,8 @@ spring:
   application:
     name: Association-Flows
   datasource:
-    url: jdbc:postgresql://localhost:5432/association-flows
-    username: postgresql
+    url: jdbc:postgresql://localhost:5432/association-flows?createDatabaseIfNotExist=true
+    username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
   jpa:
@@ -14,5 +14,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  liquibase:
+    enabled: true
+    change-log: 'classpath:db/changelog/db.changelog-master.xml'
 
 

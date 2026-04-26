@@ -1,6 +1,6 @@
 package com.mg.Association_Flows.payment.domain.entity;
 
-import com.mg.Association_Flows.membership.domain.entity.AssociationSlot;
+import com.mg.Association_Flows.associationSlot.domain.entity.AssociationSlot;
 import com.mg.Association_Flows.payment.enums.PaymentMethod;
 import com.mg.Association_Flows.payment.enums.PaymentStatus;
 import com.mg.Association_Flows.util.BaseEntity;

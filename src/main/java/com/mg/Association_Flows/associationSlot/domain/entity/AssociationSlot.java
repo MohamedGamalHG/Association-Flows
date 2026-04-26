@@ -1,7 +1,7 @@
-package com.mg.Association_Flows.membership.domain.entity;
+package com.mg.Association_Flows.associationSlot.domain.entity;
 
 import com.mg.Association_Flows.association.domain.entity.Association;
-import com.mg.Association_Flows.membership.enums.AssociationSlotStatus;
+import com.mg.Association_Flows.associationSlot.enums.AssociationSlotStatus;
 import com.mg.Association_Flows.user.domain.entity.User;
 import com.mg.Association_Flows.util.BaseEntity;
 import jakarta.persistence.*;

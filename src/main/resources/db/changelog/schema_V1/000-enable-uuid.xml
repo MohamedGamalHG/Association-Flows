@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0-enable-pgcrypto" author="mohamed.gammal">
+        <!--
+        we use this because some feature are not enabled by default
+        Enable the pgcrypto extension if it’s not already enabled
+         because we use this defaultValueComputed="gen_random_uuid()"
+
+        pgcrypto extension it provides cryptographic functions, including:
+            gen_random_uuid() ✅ (what we need)
+            encryption functions
+            hashing
+         -->
+        <sql>CREATE EXTENSION IF NOT EXISTS pgcrypto;</sql>
+    </changeSet>
+
+</databaseChangeLog>

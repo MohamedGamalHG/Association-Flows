@@ -1,4 +1,4 @@
-package com.mg.Association_Flows.membership.enums;
+package com.mg.Association_Flows.associationSlot.enums;
 
 public enum AssociationSlotStatus {
     ACTIVE, LEFT, REMOVED

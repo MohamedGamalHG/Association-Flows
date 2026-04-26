@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <include file="db/changelog/schema_V1/000-enable-uuid.xml"/>
+    <!-- i should put the blow files in this order because there is foreign key between this table-->
+    <include file="db/changelog/schema_V1/user/001-create-users-table.xml"/>
+
+    <include file="db/changelog/schema_V1/association/001-create-associations-table.xml"/>
+    <include file="db/changelog/schema_V1/association/002-add-fk-associations-owner.xml"/>
+
+    <include file="db/changelog/schema_V1/association_slot/001-create-association-slot-table.xml"/>
+    <include file="db/changelog/schema_V1/association_slot/002-add-fk-association-slot-user.xml"/>
+    <include file="db/changelog/schema_V1/association_slot/003-add-fk-association-slot-association.xml"/>
+
+    <include file="db/changelog/schema_V1/payment/001-create-payments-table.xml"/>
+    <include file="db/changelog/schema_V1/payment/002-add-fk-payments-association-slot.xml"/>
+
+</databaseChangeLog>

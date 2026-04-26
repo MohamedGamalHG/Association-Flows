@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1-create-users-table" author="mohamed.gamal">
+
+        <createTable tableName="users">
+
+            <!-- ID -->
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+
+            <!-- Basic Info -->
+            <column name="full_name" type="VARCHAR(255)"/>
+            <column name="phone_number" type="VARCHAR(20)"/>
+            <column name="email" type="VARCHAR(255)">
+                <constraints unique="true" nullable="true"/>
+            </column>
+
+            <column name="password_hash" type="VARCHAR(255)"/>
+            <column name="national_id" type="VARCHAR(50)"/>
+            <column name="profile_pic" type="TEXT"/>
+
+            <!-- Flags -->
+            <column name="is_verified" type="BOOLEAN" defaultValueBoolean="false"/>
+
+            <!-- Preferences -->
+            <column name="preferred_lang" type="VARCHAR(10)"/>
+
+            <!-- Enums (stored as STRING) -->
+            <column name="account_status" type="VARCHAR(50)"/>
+            <column name="role_type" type="VARCHAR(50)"/>
+
+            <!-- Activity -->
+            <column name="last_login" type="TIMESTAMP WITH TIME ZONE"/>
+
+            <!-- Auditing -->
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueComputed="CURRENT_TIMESTAMP"/>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

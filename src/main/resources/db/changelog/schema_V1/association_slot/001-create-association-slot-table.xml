@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1-create-association-slot-table" author="mohamed.gamal">
+
+        <createTable tableName="association_slot">
+
+            <!-- ID -->
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <!-- FK to users -->
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="association_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Financial -->
+            <column name="turn_order" type="INT"/>
+            <column name="is_payout_done" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="payout_date" type="DATE"/>
+            <column name="total_paid_so_far" type="DECIMAL(12,2)"/>
+            <column name="remaining_installments" type="INT"/>
+
+
+            <!-- Info -->
+            <column name="joined_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="alias_name" type="VARCHAR(255)"/>
+            <column name="notes" type="TEXT"/>
+            <column name="guarantor_info" type="VARCHAR(255)"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+
+            <!-- Enum -->
+            <column name="status" type="VARCHAR(50)"/>
+
+            <!-- Audit -->
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"
+                    defaultValueComputed="CURRENT_TIMESTAMP"/>
+
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+
+
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>
