@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+    Some databases require full column definition
+    Some require type redefinition
+    Some behave differently when altering constraints
+    -->
+    <changeSet id="3-add-not-null-monthly" author="mohamed.gamal">
+        <addNotNullConstraint tableName="associations"
+                              columnName="monthly_amount"
+                              columnDataType="DECIMAL(12,2)"/>
+    </changeSet>
+</databaseChangeLog>

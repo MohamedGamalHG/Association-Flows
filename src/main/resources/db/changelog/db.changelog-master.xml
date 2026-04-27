@@ -16,4 +16,7 @@
     <include file="db/changelog/schema_V1/payment/001-create-payments-table.xml"/>
     <include file="db/changelog/schema_V1/payment/002-add-fk-payments-association-slot.xml"/>
 
+    <include file="db/changelog/schema_V1/user/002-add-unique-on-phone-number.xml"/>
+    <include file="db/changelog/schema_V1/association/003-add-not-null-monthly-amount.xml"/>
+
 </databaseChangeLog>
