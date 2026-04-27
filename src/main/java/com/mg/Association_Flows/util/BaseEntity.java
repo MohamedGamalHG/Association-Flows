@@ -22,7 +22,9 @@ public class BaseEntity {
     @UuidGenerator
     private UUID id;
     @CreatedDate
+//    @Column(name = "created_at", updatable = false)
     private Timestamp createdAt  ;
     @LastModifiedDate
+//    @Column(name = "updated_at")
     private Timestamp updatedAt;
 }

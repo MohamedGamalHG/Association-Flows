@@ -9,6 +9,8 @@ import lombok.*;
 import java.sql.Timestamp;
 
 @Entity
+// i add the table name because user is reserved key word in postgresql
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
