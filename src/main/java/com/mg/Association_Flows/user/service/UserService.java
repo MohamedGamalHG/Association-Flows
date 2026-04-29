@@ -2,10 +2,13 @@ package com.mg.Association_Flows.user.service;
 
 import com.mg.Association_Flows.user.domain.entity.User;
 import com.mg.Association_Flows.user.domain.repo.UserRepository;
+import com.mg.Association_Flows.user.mapper.UserDto;
+import com.mg.Association_Flows.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,25 +17,39 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public UserDto createUser(UserDto userDto) {
+        User user = userMapper.mapToEntity(userDto);
+        userRepository.save(user);
+        return userDto;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+//        return users.stream().map(userMapper::mapToDto).toList();
+        return userMapper.mapToDtoList(users);
     }
 
-    public User getUserById(UUID id) {
-        return findUser(id);
+    public UserDto getUserById(UUID id) {
+        return userMapper.mapToDto(findUser(id));
     }
 
-    public User updateUser(UUID id, User user) {
+    public UserDto updateUser(UUID id, UserDto userDto) {
         User findedUser = findUser(id);
-        // this to update user that get from DB with data that will change to it
-        // that come from request
-        BeanUtils.copyProperties(user, findedUser, "id");
-        return userRepository.save(findedUser);
+        /*
+         * this to update user that get from DB with data that will change to it
+         * that come from request but there is dangerous in this usage
+         * this statement below is just update the field that come in request other will
+         * be null
+         * until it have a data if phone_number has value and i just update email then
+         * when use BeanUtils.copyProperties(userDto, findedUser, "id");
+         * will make phone_number null
+         * 
+         * BeanUtils.copyProperties(userDto, findedUser, "id");
+         */
+        userMapper.updateUserFromDto(userDto, findedUser);
+        return userMapper.mapToDto(userRepository.save(findedUser));
     }
 
     public boolean deleteUser(UUID id) {
