@@ -11,6 +11,7 @@ import com.mg.Association_Flows.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,10 +34,10 @@ public class AssociationService {
     }
 
     public AssociationDto getAssociationById(UUID id) {
-        return  associationMapper.mapToDto(findAssociation(id));
+        return associationMapper.mapToDto(findAssociation(id));
     }
 
-    public AssociationDto createAssociation(AssociationDto associationDto){
+    public AssociationDto createAssociation(AssociationDto associationDto) {
         associationDto.setOwner(userMapper.mapToDto(service.findUser(associationDto.getOwner().getId())));
         Association association = associationMapper.mapToEntity(associationDto);
         Association associationSaved = associationRepository.save(association);
@@ -47,9 +48,29 @@ public class AssociationService {
 
     public AssociationDto updateAssociation(UUID id, AssociationDto associationDto) {
         Association association = findAssociation(id);
+        /*
+        handle logic if there is any update in the monthly amount , total share so this
+         will reflect in the totalPoolAmount
+        */
+
+        handleTotalPool(associationDto, association);
+
         associationMapper.updateAssociationFromDto(associationDto, association);
         associationRepository.save(association);
         return associationDto;
+    }
+
+    private void handleTotalPool(AssociationDto associationDto, Association association) {
+        if (associationDto.getMonthlyAmount() != null && associationDto.getTotalShares() != null) {
+            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
+                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
+        } else if (associationDto.getMonthlyAmount() != null) {
+            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
+                    .multiply(BigDecimal.valueOf(association.getTotalShares())));
+        } else if (associationDto.getTotalShares() != null) {
+            associationDto.setTotalPoolAmount(association.getMonthlyAmount()
+                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
+        }
     }
 
     public Boolean deleteAssociation(UUID id) {
@@ -58,7 +79,7 @@ public class AssociationService {
         return true;
     }
 
-    private Association findAssociation(UUID id){
+    private Association findAssociation(UUID id) {
         return associationRepository.findById(id).orElseThrow(this::message);
     }
 
