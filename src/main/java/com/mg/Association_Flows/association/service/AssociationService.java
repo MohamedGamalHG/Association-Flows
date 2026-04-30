@@ -60,19 +60,6 @@ public class AssociationService {
         return associationDto;
     }
 
-    private void handleTotalPool(AssociationDto associationDto, Association association) {
-        if (associationDto.getMonthlyAmount() != null && associationDto.getTotalShares() != null) {
-            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
-                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
-        } else if (associationDto.getMonthlyAmount() != null) {
-            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
-                    .multiply(BigDecimal.valueOf(association.getTotalShares())));
-        } else if (associationDto.getTotalShares() != null) {
-            associationDto.setTotalPoolAmount(association.getMonthlyAmount()
-                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
-        }
-    }
-
     public Boolean deleteAssociation(UUID id) {
         findAssociation(id);
         associationRepository.deleteById(id);
@@ -85,5 +72,18 @@ public class AssociationService {
 
     private RuntimeException message() {
         return new RuntimeException("Association Not Found");
+    }
+
+    private void handleTotalPool(AssociationDto associationDto, Association association) {
+        if (associationDto.getMonthlyAmount() != null && associationDto.getTotalShares() != null) {
+            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
+                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
+        } else if (associationDto.getMonthlyAmount() != null) {
+            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
+                    .multiply(BigDecimal.valueOf(association.getTotalShares())));
+        } else if (associationDto.getTotalShares() != null) {
+            associationDto.setTotalPoolAmount(association.getMonthlyAmount()
+                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
+        }
     }
 }
