@@ -1,4 +1,4 @@
-package com.mg.Association_Flows.user.mapper;
+package com.mg.Association_Flows.user.domain.dtos;
 
 import com.mg.Association_Flows.user.enums.AccountStatus;
 import com.mg.Association_Flows.user.enums.RoleType;
@@ -6,7 +6,6 @@ import com.mg.Association_Flows.util.BaseDto;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor

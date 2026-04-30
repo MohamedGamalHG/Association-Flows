@@ -1,10 +1,11 @@
 package com.mg.Association_Flows.user.mapper;
 
+import com.mg.Association_Flows.user.domain.dtos.UserDto;
 import com.mg.Association_Flows.user.domain.entity.User;
 import org.mapstruct.*;
 
 import java.util.List;
-
+// Generate implementation AND register it as a Spring bean
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
 

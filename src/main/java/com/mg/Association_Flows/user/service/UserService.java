@@ -2,13 +2,11 @@ package com.mg.Association_Flows.user.service;
 
 import com.mg.Association_Flows.user.domain.entity.User;
 import com.mg.Association_Flows.user.domain.repo.UserRepository;
-import com.mg.Association_Flows.user.mapper.UserDto;
+import com.mg.Association_Flows.user.domain.dtos.UserDto;
 import com.mg.Association_Flows.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +19,8 @@ public class UserService {
 
     public UserDto createUser(UserDto userDto) {
         User user = userMapper.mapToEntity(userDto);
-        userRepository.save(user);
+        User userSaved = userRepository.save(user);
+        userDto.setId(userSaved.getId());
         return userDto;
     }
 
@@ -58,7 +57,7 @@ public class UserService {
         return true;
     }
 
-    private User findUser(UUID id) {
+    public User findUser(UUID id) {
         return userRepository.findById(id).orElseThrow(this::message);
     }
 

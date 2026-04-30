@@ -1,7 +1,6 @@
 package com.mg.Association_Flows.user.controller;
 
-import com.mg.Association_Flows.user.domain.entity.User;
-import com.mg.Association_Flows.user.mapper.UserDto;
+import com.mg.Association_Flows.user.domain.dtos.UserDto;
 import com.mg.Association_Flows.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
