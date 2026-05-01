@@ -1,41 +1,34 @@
-package com.mg.Association_Flows.associationSlot.domain.entity;
+package com.mg.Association_Flows.associationSlot.domain.dtos;
 
+
+import com.mg.Association_Flows.association.domain.dtos.AssociationDto;
 import com.mg.Association_Flows.association.domain.entity.Association;
 import com.mg.Association_Flows.associationSlot.enums.AssociationSlotStatus;
+import com.mg.Association_Flows.user.domain.dtos.UserDto;
 import com.mg.Association_Flows.user.domain.entity.User;
-import com.mg.Association_Flows.util.BaseEntity;
+import com.mg.Association_Flows.util.BaseDto;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-/*
- * this table response for carry the relation of many to many that is result from
- * the user table and the association table
- * so for that reason we divide this relation to 2 @ManyToOne relation in this table
- * with make @ManyToMany in the table User or Association because
- * we add some column or logic in this table so we divide for that reason
- * */
-public class AssociationSlot extends BaseEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class AssociationSlotDto extends BaseDto {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "association_id")
-    private Association association;
+    private UserDto user;
+    private AssociationDto association;
     private Integer turnOrder;
     private Boolean isPayoutDone;
     private LocalDate payoutDate;
     private Timestamp joinedAt;
-    @Enumerated(EnumType.STRING)
     private AssociationSlotStatus status;
     private String aliasName;
     /*
@@ -45,7 +38,6 @@ public class AssociationSlot extends BaseEntity {
     */
     private BigDecimal totalPaidSoFar;
     private Integer remainingInstallments;
-    @Lob
     private String notes;
     private String guarantorInfo;
     private String createdBy;
