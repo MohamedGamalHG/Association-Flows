@@ -4,10 +4,12 @@ import com.mg.Association_Flows.association.domain.dtos.AssociationDto;
 import com.mg.Association_Flows.association.domain.entity.Association;
 import com.mg.Association_Flows.association.domain.repo.AssociationRepository;
 import com.mg.Association_Flows.association.mapper.AssociationMapper;
+import com.mg.Association_Flows.associationSlot.service.AssociationSlotService;
 import com.mg.Association_Flows.user.domain.entity.User;
 import com.mg.Association_Flows.user.domain.repo.UserRepository;
 import com.mg.Association_Flows.user.mapper.UserMapper;
 import com.mg.Association_Flows.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class AssociationService {
     private final UserService service;
     private final AssociationMapper associationMapper;
     private final UserMapper userMapper;
+    private final AssociationSlotService associationSlotService;
 
     public List<AssociationDto> getAllAssociation() {
         List<Association> associations = associationRepository.findAll();
@@ -37,11 +40,15 @@ public class AssociationService {
         return associationMapper.mapToDto(findAssociation(id));
     }
 
+    @Transactional // this transactional for association slot because will generate slots
     public AssociationDto createAssociation(AssociationDto associationDto) {
         associationDto.setOwner(userMapper.mapToDto(service.findUser(associationDto.getOwner().getId())));
         Association association = associationMapper.mapToEntity(associationDto);
         Association associationSaved = associationRepository.save(association);
         associationDto.setId(associationSaved.getId());
+        // start call slot service to generate slots
+            associationSlotService.generateInitialSlots(associationSaved);
+        // end call
         return associationDto;
     }
 
@@ -66,7 +73,7 @@ public class AssociationService {
         return true;
     }
 
-    private Association findAssociation(UUID id) {
+    public Association findAssociation(UUID id) {
         return associationRepository.findById(id).orElseThrow(this::message);
     }
 
