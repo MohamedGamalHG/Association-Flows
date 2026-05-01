@@ -19,4 +19,7 @@
     <include file="db/changelog/schema_V1/user/002-add-unique-on-phone-number.xml"/>
     <include file="db/changelog/schema_V1/association/003-add-not-null-monthly-amount.xml"/>
 
+    <include file="db/changelog/schema_V1/association_slot/004-create-column-is-vacant.xml"/>
+    <include file="db/changelog/schema_V1/association_slot/005-alter-user-id-nullable-column.xml"/>
+
 </databaseChangeLog>
