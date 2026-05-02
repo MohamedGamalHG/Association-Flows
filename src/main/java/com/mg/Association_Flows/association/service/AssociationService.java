@@ -68,9 +68,11 @@ public class AssociationService {
          * after association is created and user assigned to this association
          * */
 
+        // the two method i remove it and instead of them i make this code to check if change in core
         boolean isTryingChangeCore = associationDto.getMonthlyAmount() != null ||
                 associationDto.getTotalShares() != null ||
                 associationDto.getStartDate() != null;
+
         if (isTryingChangeCore)
             handleAssociationAssign(id);
 
@@ -108,17 +110,7 @@ public class AssociationService {
     }
 
     private void handleTotalPool(AssociationDto associationDto, Association association) {
-//        if (associationDto.getMonthlyAmount() != null && associationDto.getTotalShares() != null) {
-//            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
-//                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
-//        } else if (associationDto.getMonthlyAmount() != null) {
-//            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
-//                    .multiply(BigDecimal.valueOf(association.getTotalShares())));
-//        } else if (associationDto.getTotalShares() != null) {
-//            associationDto.setTotalPoolAmount(association.getMonthlyAmount()
-//                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
-//        }
-
+        // update code base to be shorter
         BigDecimal monthly = (associationDto.getMonthlyAmount() != null) ? associationDto.getMonthlyAmount() : association.getMonthlyAmount();
         Integer shares = (associationDto.getTotalShares() != null) ? associationDto.getTotalShares() : association.getTotalShares();
 
