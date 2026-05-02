@@ -63,12 +63,15 @@ public class AssociationService {
         */
 
         /*
-        * I put this logic of 2 method to handle that data that will be updated
-        * the data that allowance to update is (title,description,status)
-        * after association is created and user assigned to this association
-        * */
+         * I put this logic of 2 method to handle that data that will be updated
+         * the data that allowance to update is (title,description,status)
+         * after association is created and user assigned to this association
+         * */
 
-        if(! (countOfChangesAllowance(associationDto) == countRequestDataThatChanged(associationDto)) )
+        boolean isTryingChangeCore = associationDto.getMonthlyAmount() != null ||
+                associationDto.getTotalShares() != null ||
+                associationDto.getStartDate() != null;
+        if (isTryingChangeCore)
             handleAssociationAssign(id);
 
         /*
@@ -105,33 +108,38 @@ public class AssociationService {
     }
 
     private void handleTotalPool(AssociationDto associationDto, Association association) {
-        if (associationDto.getMonthlyAmount() != null && associationDto.getTotalShares() != null) {
-            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
-                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
-        } else if (associationDto.getMonthlyAmount() != null) {
-            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
-                    .multiply(BigDecimal.valueOf(association.getTotalShares())));
-        } else if (associationDto.getTotalShares() != null) {
-            associationDto.setTotalPoolAmount(association.getMonthlyAmount()
-                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
-        }
+//        if (associationDto.getMonthlyAmount() != null && associationDto.getTotalShares() != null) {
+//            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
+//                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
+//        } else if (associationDto.getMonthlyAmount() != null) {
+//            associationDto.setTotalPoolAmount(associationDto.getMonthlyAmount()
+//                    .multiply(BigDecimal.valueOf(association.getTotalShares())));
+//        } else if (associationDto.getTotalShares() != null) {
+//            associationDto.setTotalPoolAmount(association.getMonthlyAmount()
+//                    .multiply(BigDecimal.valueOf(associationDto.getTotalShares())));
+//        }
+
+        BigDecimal monthly = (associationDto.getMonthlyAmount() != null) ? associationDto.getMonthlyAmount() : association.getMonthlyAmount();
+        Integer shares = (associationDto.getTotalShares() != null) ? associationDto.getTotalShares() : association.getTotalShares();
+
+        associationDto.setTotalPoolAmount(monthly.multiply(BigDecimal.valueOf(shares)));
     }
 
     private int countOfChangesAllowance(AssociationDto associationDto) {
         int count = 0;
-        if(associationDto.getTitle() != null)
+        if (associationDto.getTitle() != null)
             count++;
         else if (associationDto.getDescription() != null)
             count++;
-        else if(AssociationStatus.isValid(associationDto.getStatus().name()))
+        else if (AssociationStatus.isValid(associationDto.getStatus().name()))
             count++;
         return count;
     }
 
     private int countRequestDataThatChanged(AssociationDto associationDto) {
         int count = 0;
-        try{
-            for (Field field:associationDto.getClass().getDeclaredFields()) {
+        try {
+            for (Field field : associationDto.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
                 Object value = field.get(associationDto);
                 if (value != null) {
