@@ -22,4 +22,6 @@
     <include file="db/changelog/schema_V1/association_slot/004-create-column-is-vacant.xml"/>
     <include file="db/changelog/schema_V1/association_slot/005-alter-user-id-nullable-column.xml"/>
 
+    <include file="db/changelog/schema_V1/association_slot/006-alter-column-vacant-to-reserved.xml"/>
+
 </databaseChangeLog>

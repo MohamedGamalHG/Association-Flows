@@ -16,8 +16,8 @@ public interface AssociationSlotRepository extends BaseRepository<AssociationSlo
 
     List<AssociationSlot> findByAssociationId(UUID associationId);
 
-    @Query("select slot.isVacant from AssociationSlot slot where  slot.association.id = :associationId and slot.isReserved = true")
-    Boolean checkIfAnyUserAssignToOrder(@Param("associationId") UUID associationId);
+    @Query("select slot from AssociationSlot slot where  slot.association.id = :associationId and slot.user.id is not null")
+    AssociationSlot checkIfAnyUserAssignToOrder(@Param("associationId") UUID associationId);
 
     Boolean existsByTurnOrder(int orderId);
 
