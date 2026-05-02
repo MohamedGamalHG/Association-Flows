@@ -19,11 +19,12 @@ import java.util.UUID;
 public class AssociationSlotService {
 
     private final AssociationSlotRepository associationSlotRepository;
-//    private final AssociationService associationService;
+    //    private final AssociationService associationService;
     private final AssociationSlotMapper associationSlotMapper;
-    public void generateInitialSlots(Association association){
+
+    public void generateInitialSlots(Association association) {
         List<AssociationSlot> associationSlots = new ArrayList<>();
-        for (int i=1;i<= association.getTotalShares();i++){
+        for (int i = 1; i <= association.getTotalShares(); i++) {
             AssociationSlot associationSlot = new AssociationSlot();
             associationSlot.setAssociation(association);
             associationSlots.add(associationSlot);
@@ -31,11 +32,16 @@ public class AssociationSlotService {
         associationSlotRepository.saveAll(associationSlots);
     }
 
-    public List<AssociationSlotDto> getAllAssociationSlotsByAssociationId(UUID associationId){
+    public List<AssociationSlotDto> getAllAssociationSlotsByAssociationId(UUID associationId) {
         // if there is no any associationId then will retrieve empty list
         List<AssociationSlot> associationSlots = associationSlotRepository.findByAssociationId(associationId);
         return associationSlots.stream()
                 .map(associationSlotMapper::mapToDTO)
                 .toList();
+    }
+
+    public boolean checkIfAnyUserAssignToOrder(UUID associationId) {
+        Boolean afterChecked = associationSlotRepository.checkIfAnyUserAssignToOrder(associationId);
+        return afterChecked != null;
     }
 }

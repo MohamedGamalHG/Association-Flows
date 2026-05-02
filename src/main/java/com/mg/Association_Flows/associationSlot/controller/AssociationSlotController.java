@@ -23,4 +23,5 @@ public class AssociationSlotController {
     public ResponseEntity<List<AssociationSlotDto>> getAllAssociationSlotByAssociationId(@PathVariable UUID association_id) {
         return ResponseEntity.ok().body(associationSlotService.getAllAssociationSlotsByAssociationId(association_id));
     }
+
 }
