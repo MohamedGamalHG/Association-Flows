@@ -32,8 +32,8 @@ public class AssociationSlot extends BaseEntity {
     @JoinColumn(name = "association_id")
     private Association association;
     private Integer turnOrder;
-    private Boolean isPayoutDone;
-    private LocalDate payoutDate;
+    private Boolean isPayoutDone;// ده بيقول ان العميل ده كان عليه الدور وقبض
+    private LocalDate payoutDate;// هنا بنحط التاريخ الي العميل ده قبض فيه الجمعيه
     private Timestamp joinedAt;
     @Enumerated(EnumType.STRING)
     private AssociationSlotStatus status;
@@ -43,7 +43,7 @@ public class AssociationSlot extends BaseEntity {
         like every month he pay 1K so after 5 month this column will be 5K
         carry the total amount that paid until this month
     */
-    private BigDecimal totalPaidSoFar;
+    private BigDecimal totalPaidSoFar;// هنا بنحط المبالغ الي دفعها لحد دلوقتي يعني مثلا جمعيه ب 2000 بعد خمس شهور دفع هيكون 10000 بنزود عليه يعني
     private Integer remainingInstallments;
     @Lob
     private String notes;

@@ -11,6 +11,8 @@ import com.mg.Association_Flows.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +66,7 @@ public class AssociationSlotService {
             associationSlot.setStatus(AssociationSlotStatus.ACTIVE);
             // here who log in with manager (manager of association)
             associationSlot.setCreatedBy("owner");
+            associationSlot.setJoinedAt(new Timestamp(System.currentTimeMillis()));
             associationSlotRepository.save(associationSlot);
             return associationSlot;
         }
