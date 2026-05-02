@@ -18,6 +18,12 @@ public interface AssociationSlotRepository extends BaseRepository<AssociationSlo
     @Query("select slot.isVacant from AssociationSlot slot where  slot.association.id = :associationId and slot.isVacant = true")
     Boolean checkIfAnyUserAssignToOrder(@Param("associationId") UUID associationId);
 
+    Boolean existsByTurnOrder(int orderId);
+
+    @Query("select slot from AssociationSlot slot where " +
+            " slot.user.id is null and slot.isVacant is false and slot.turnOrder is null")
+    List<AssociationSlot> getAllAssociationSlotsThatNotAssignToUser();
+
 //    @Query("select slot from AssociationSlot slot where  slot.association.id = ?1 and slot.isVacant = true")
 //    AssociationSlot checkIfAnyUserAssignToOrder( UUID associationId);
 }
