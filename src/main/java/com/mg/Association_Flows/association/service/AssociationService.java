@@ -125,30 +125,4 @@ public class AssociationService {
         associationDto.setTotalPoolAmount(monthly.multiply(BigDecimal.valueOf(shares)));
     }
 
-    private int countOfChangesAllowance(AssociationDto associationDto) {
-        int count = 0;
-        if (associationDto.getTitle() != null)
-            count++;
-        else if (associationDto.getDescription() != null)
-            count++;
-        else if (AssociationStatus.isValid(associationDto.getStatus().name()))
-            count++;
-        return count;
-    }
-
-    private int countRequestDataThatChanged(AssociationDto associationDto) {
-        int count = 0;
-        try {
-            for (Field field : associationDto.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                Object value = field.get(associationDto);
-                if (value != null) {
-                    count++;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return count;
-    }
 }
