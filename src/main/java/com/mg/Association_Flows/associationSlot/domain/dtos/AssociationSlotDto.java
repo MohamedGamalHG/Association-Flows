@@ -42,5 +42,5 @@ public class AssociationSlotDto extends BaseDto {
     private String guarantorInfo;
     private String createdBy;
     //    this column to say (الدور ده مشغول ولا لسا فاضي حد يخده)
-    private Boolean isVacant;
+    private Boolean isReserved;
 }
