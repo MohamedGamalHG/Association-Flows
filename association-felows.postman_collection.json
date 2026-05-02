@@ -1,0 +1,411 @@
+{
+  "info": {
+    "_postman_id": "44b329b3-e5fd-4188-926a-754ce8d8b186",
+    "name": "association-felows",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "16894396"
+  },
+  "item": [
+    {
+      "name": "association",
+      "item": [
+        {
+          "name": "create association",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"association_id\",response.id)\r",
+                  "\r",
+                  "\r",
+                  "console.log(response.id)"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"owner\": {\r\n        \"id\": \"c30e88e1-ea67-4b15-a2b6-17150563b8bf\"\r\n    },\r\n    \"title\": \"Association Mohamed Friends\",\r\n    \"monthlyAmount\": 10000.00,\r\n    \"totalShares\": 10,\r\n    \"startDate\": \"2026-05-01\",\r\n    \"endDate\": \"2027-02-01\",\r\n    \"collectionDay\": 5,\r\n    \"payoutDay\": 25,\r\n    \"currency\": \"egp\",\r\n    \"description\": \"Association Mohamed Friends savings plan for Mohamed Friends\",\r\n    \"status\": \"ACTIVE\",\r\n    \"totalPoolAmount\": 100000.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/associations",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "associations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all associations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/associations/getAllAssociation",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "associations",
+                "getAllAssociation"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "find association by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/associations/getAssociation/{{association_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "associations",
+                "getAssociation",
+                "{{association_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update association",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Association Fawry with mohamed gamal\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/associations/update/{{association_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "associations",
+                "update",
+                "{{association_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete association",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"owner\": {\r\n        \"id\": \"c30e88e1-ea67-4b15-a2b6-17150563b8bf\"\r\n    },\r\n    \"title\": \"Association Friends\",\r\n    \"monthlyAmount\": 2000.00,\r\n    \"totalShares\": 10,\r\n    \"startDate\": \"2026-05-01\",\r\n    \"endDate\": \"2027-02-01\",\r\n    \"collectionDay\": 5,\r\n    \"payoutDay\": 25,\r\n    \"currency\": \"egp\",\r\n    \"description\": \"Association Friends savings plan for friends\",\r\n    \"status\": \"ACTIVE\",\r\n    \"totalPoolAmount\": 20000.00\r\n}"
+            },
+            "url": {
+              "raw": "{{url}}/api/associations/{{association_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "associations",
+                "{{association_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "create user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// allowed prefixes\r",
+                  "const prefixes = [\"11\", \"12\", \"10\", \"15\"];\r",
+                  "\r",
+                  "// pick random prefix\r",
+                  "const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];\r",
+                  "\r",
+                  "// generate 8 random digits\r",
+                  "let randomPart = \"\";\r",
+                  "for (let i = 0; i < 8; i++) {\r",
+                  "    randomPart += Math.floor(Math.random() * 10);\r",
+                  "}\r",
+                  "\r",
+                  "// final number\r",
+                  "const mobile = \"0\" + prefix + randomPart;\r",
+                  "\r",
+                  "const randomName = Math.random().toString(36).substring(2, 10);\r",
+                  "\r",
+                  "console.log(randomName)\r",
+                  "\r",
+                  "\r",
+                  "// save it\r",
+                  "pm.environment.set(\"mobile_number\", mobile);\r",
+                  "pm.environment.set(\"var_name\",randomName)\r",
+                  "console.log(\"Generated Mobile:\", mobile);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"user_id\",response.id)\r",
+                  "\r",
+                  "console.log(response.id)"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fullName\": \"Mohamed Gamal\",\r\n  \"phoneNumber\": \"{{mobile_number}}\",\r\n  \"email\": \"{{var_name}}@example.com\",\r\n  \"passwordHash\": \"123456\",\r\n  \"nationalId\": \"29801011234567\",\r\n  \"profileImage\": \"https://example.com/image.jpg\",\r\n  \"isVerified\": false,\r\n  \"preferredLang\": \"en\",\r\n  \"accountStatus\": \"ACTIVE\",\r\n  \"roleType\": \"User\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/users",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete user",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/users/{{user_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update user",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"mohamed@ssg.com\",\r\n  \"profileImage\": \"https://mohamed.mg.com/image.jpg\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/users/{{user_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get user by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/users/getUserById/{{user_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "getUserById",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/users/getAllUsers",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "getAllUsers"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "association-slot",
+      "item": [
+        {
+          "name": "get all association slot by association id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/association-slot/allAssociationSlotByAssId/{{association_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "association-slot",
+                "allAssociationSlotByAssId",
+                "{{association_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "assign user to association",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/association-slot/assignUserToAssociation/{{association_id}}/{{user_id}}/2",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "association-slot",
+                "assignUserToAssociation",
+                "{{association_id}}",
+                "{{user_id}}",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": ""
+    }
+  ]
+}
