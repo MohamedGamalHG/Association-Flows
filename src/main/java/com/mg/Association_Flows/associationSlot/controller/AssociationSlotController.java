@@ -22,8 +22,8 @@ public class AssociationSlotController {
         return ResponseEntity.ok().body(associationSlotService.getAllAssociationSlotsByAssociationId(association_id));
     }
 
-    @PostMapping("/assignUserToAssociation/{userId}/{orderId}")
-    public ResponseEntity<AssociationSlot>  assignUserToAssociation(@PathVariable UUID userId,@PathVariable  int orderId) {
-        return ResponseEntity.ok().body(associationSlotService.assignOrderOnUserToAssociation(userId,orderId));
+    @PostMapping("/assignUserToAssociation/{associationId}/{userId}/{orderId}")
+    public ResponseEntity<AssociationSlot>  assignUserToAssociation(@PathVariable  UUID associationId,@PathVariable UUID userId,@PathVariable  int orderId) {
+        return ResponseEntity.ok().body(associationSlotService.assignOrderOnUserToAssociation(associationId,userId,orderId));
     }
 }
