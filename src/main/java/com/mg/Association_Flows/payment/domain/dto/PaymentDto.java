@@ -1,31 +1,27 @@
-package com.mg.Association_Flows.payment.domain.entity;
+package com.mg.Association_Flows.payment.domain.dto;
 
+import com.mg.Association_Flows.associationSlot.domain.dtos.AssociationSlotDto;
 import com.mg.Association_Flows.associationSlot.domain.entity.AssociationSlot;
 import com.mg.Association_Flows.payment.enums.PaymentMethod;
 import com.mg.Association_Flows.payment.enums.PaymentStatus;
-import com.mg.Association_Flows.user.domain.entity.User;
-import com.mg.Association_Flows.util.BaseEntity;
+import com.mg.Association_Flows.util.BaseDto;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-/*
- *  this table response for all transactions that will be in the system act as AuditLog
- * */
-public class Payment extends BaseEntity {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class PaymentDto extends BaseDto {
     // we link this payment by the association slot because if i enter with more than one association slot
     // like slot number 1 and slot number 11 so if the association is 2000 it should pay 4000 to this slots
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "association_slot_id",referencedColumnName = "id")
-    private AssociationSlot associationSlot;
+    private AssociationSlotDto associationSlot;
     private BigDecimal amount;
     private Integer targetMonth; // الشهر الي بيدفع عشانه
     private Timestamp paymentDate;
@@ -38,8 +34,4 @@ public class Payment extends BaseEntity {
     private String memberNote;
     private String managerNote;
     private Boolean isAdvance; // هل ده دفع مقدم لشهر مثلا قدام او شهرين
-//    private String referenceNumber;
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "manager_confirmed_id",referencedColumnName = "id")
-//    private User managerConfirmed;
 }
