@@ -1,5 +1,7 @@
 package com.mg.Association_Flows.user.service;
 
+import com.mg.Association_Flows.payment.domain.dto.PaymentDto;
+import com.mg.Association_Flows.payment.service.PaymentService;
 import com.mg.Association_Flows.user.domain.entity.User;
 import com.mg.Association_Flows.user.domain.repo.UserRepository;
 import com.mg.Association_Flows.user.domain.dtos.UserDto;
@@ -16,6 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PaymentService paymentService;
 
     public UserDto createUser(UserDto userDto) {
         User user = userMapper.mapToEntity(userDto);
@@ -63,6 +66,22 @@ public class UserService {
 
     private RuntimeException message() {
         return new RuntimeException("User Not Found");
+    }
+
+
+    /// ////////////////////////////////////////////////
+
+    public PaymentDto getPaymentToConfirmByAssociationSlotId(UUID associationSlotId) {
+        return paymentService.findPaymentByAssociationSlotId(associationSlotId);
+    }
+
+    public List<PaymentDto> getListOfPaymentToConfirmedByAssociationId(UUID associationId) {
+        return paymentService.getAllPaymentToConfirmedByAssociationId(associationId);
+    }
+
+    public boolean confirmPayment(UUID paymentId,PaymentDto paymentDto) {
+        // should update confirmation_date , status of payment , optional to add note
+        return paymentService.confirmPaymentFromManager(paymentId, paymentDto);
     }
 
 }
