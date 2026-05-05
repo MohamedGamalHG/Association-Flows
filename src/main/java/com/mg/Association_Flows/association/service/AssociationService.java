@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,6 +47,11 @@ public class AssociationService {
     public AssociationDto createAssociation(AssociationDto associationDto) {
         associationDto.setOwner(userMapper.mapToDto(service.findUser(associationDto.getOwner().getId())));
         Association association = associationMapper.mapToEntity(associationDto);
+
+        LocalDate endDate = associationDto.getStartDate().plusMonths(associationDto.getTotalShares());
+
+        associationDto.setEndDate(endDate);
+
         Association associationSaved = associationRepository.save(association);
         associationDto.setId(associationSaved.getId());
         // start call slot service to generate slots
@@ -83,9 +89,16 @@ public class AssociationService {
 
         handleTotalPool(associationDto, association);
 
+        handleEndDate(associationDto,association);
+
         associationMapper.updateAssociationFromDto(associationDto, association);
         associationRepository.save(association);
         return associationDto;
+    }
+
+    private void handleEndDate(AssociationDto associationDto, Association association) {
+        if(associationDto.getTotalShares() != null)
+            associationDto.setEndDate(association.getStartDate().plusMonths(associationDto.getTotalShares()));
     }
 
     private void handleAssociationAssign(UUID id) {
@@ -105,6 +118,9 @@ public class AssociationService {
         return associationRepository.findById(id).orElseThrow(this::message);
     }
 
+    public BigDecimal monthlyAmountOfAssociation(UUID associationId) {
+        return findAssociation(associationId).getMonthlyAmount();
+    }
     private RuntimeException message() {
         return new RuntimeException("Association Not Found");
     }
