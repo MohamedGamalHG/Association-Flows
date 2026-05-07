@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
+@Table(name = "payments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

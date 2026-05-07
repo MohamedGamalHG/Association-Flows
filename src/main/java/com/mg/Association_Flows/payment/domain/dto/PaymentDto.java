@@ -26,9 +26,7 @@ public class PaymentDto extends BaseDto {
     private Integer targetMonth; // الشهر الي بيدفع عشانه
     private Timestamp paymentDate;
     private Timestamp confirmationDate; // this time that manager of association confirm the payment
-    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
-    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private String attachmentUrl;
     private String memberNote;
