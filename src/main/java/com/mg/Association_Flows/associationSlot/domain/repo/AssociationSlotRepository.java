@@ -25,6 +25,9 @@ public interface AssociationSlotRepository extends BaseRepository<AssociationSlo
     Optional<AssociationSlot> findSpecificSlotToAssign(@Param("assocId") UUID assocId, @Param("order") int order);
 
 
+    Optional<AssociationSlot> findByAssociationIdAndTurnOrder(UUID associationId, int turnOrder);
+
+
 //    @Query("select slot from AssociationSlot slot where  slot.association.id = ?1 and slot.isVacant = true")
 //    AssociationSlot checkIfAnyUserAssignToOrder( UUID associationId);
 }

@@ -109,4 +109,12 @@ public class AssociationSlotService {
         slot.setPayoutDate(LocalDate.now());
         associationSlotRepository.save(slot);
     }
+
+    public AssociationSlotDto findByAssociationIdAndTurnOrder(UUID associationId, int turnOrder) {
+        Optional<AssociationSlot> associationSlot = associationSlotRepository.findByAssociationIdAndTurnOrder(associationId,turnOrder);
+        if(associationSlot.isPresent()) {
+            return associationSlotMapper.mapToDTO(associationSlot.get());
+        }
+        throw new RuntimeException("Slot not found");
+    }
 }
