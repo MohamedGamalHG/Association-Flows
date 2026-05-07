@@ -118,8 +118,24 @@ public class AssociationService {
         return associationRepository.findById(id).orElseThrow(this::message);
     }
 
+    public BigDecimal totalPoolAmountOfAssociation(UUID associationId) {
+        return findAssociation(associationId).getTotalPoolAmount();
+    }
+
     public BigDecimal monthlyAmountOfAssociation(UUID associationId) {
         return findAssociation(associationId).getMonthlyAmount();
+    }
+
+    public LocalDate startDateOfAssociation(UUID associationId) {
+        return findAssociation(associationId).getStartDate();
+    }
+
+    public LocalDate endDateOfAssociation(UUID associationId) {
+        return findAssociation(associationId).getEndDate();
+    }
+
+    public AssociationStatus statusOfAssociation(UUID associationId) {
+        return findAssociation(associationId).getStatus();
     }
     private RuntimeException message() {
         return new RuntimeException("Association Not Found");
