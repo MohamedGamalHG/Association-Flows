@@ -18,7 +18,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PaymentService paymentService;
 
     public UserDto createUser(UserDto userDto) {
         User user = userMapper.mapToEntity(userDto);
@@ -69,19 +68,6 @@ public class UserService {
     }
 
 
-    /// ////////////////////////////////////////////////
 
-    public PaymentDto getPaymentToConfirmByAssociationSlotId(UUID associationSlotId) {
-        return paymentService.findPaymentByAssociationSlotId(associationSlotId);
-    }
-
-    public List<PaymentDto> getListOfPaymentToConfirmedByAssociationId(UUID associationId) {
-        return paymentService.getAllPaymentToConfirmedByAssociationId(associationId);
-    }
-
-    public boolean confirmPayment(UUID paymentId,PaymentDto paymentDto) {
-        // should update confirmation_date , status of payment , optional to add note
-        return paymentService.confirmPaymentFromManager(paymentId, paymentDto);
-    }
 
 }
