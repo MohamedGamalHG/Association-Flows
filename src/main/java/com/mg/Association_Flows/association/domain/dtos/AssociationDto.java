@@ -31,4 +31,6 @@ public class AssociationDto extends BaseDto {
     private String description;
     private AssociationStatus status;
     private BigDecimal totalPoolAmount; // Total amount received
+    private BigDecimal currentCollectedBalance;
+
 }

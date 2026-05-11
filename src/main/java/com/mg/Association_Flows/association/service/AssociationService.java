@@ -5,7 +5,10 @@ import com.mg.Association_Flows.association.domain.entity.Association;
 import com.mg.Association_Flows.association.domain.repo.AssociationRepository;
 import com.mg.Association_Flows.association.enums.AssociationStatus;
 import com.mg.Association_Flows.association.mapper.AssociationMapper;
+import com.mg.Association_Flows.associationSlot.domain.dtos.AssociationSlotDto;
 import com.mg.Association_Flows.associationSlot.service.AssociationSlotService;
+import com.mg.Association_Flows.installment.domain.repo.InstallmentRepository;
+import com.mg.Association_Flows.installment.service.InstallmentService;
 import com.mg.Association_Flows.user.domain.entity.User;
 import com.mg.Association_Flows.user.domain.repo.UserRepository;
 import com.mg.Association_Flows.user.mapper.UserMapper;
@@ -30,6 +33,7 @@ public class AssociationService {
     private final AssociationMapper associationMapper;
     private final UserMapper userMapper;
     private final AssociationSlotService associationSlotService;
+    private final InstallmentService installmentService;
 
     public List<AssociationDto> getAllAssociation() {
         List<Association> associations = associationRepository.findAll();
@@ -46,17 +50,22 @@ public class AssociationService {
     @Transactional // this transactional for association slot because will generate slots
     public AssociationDto createAssociation(AssociationDto associationDto) {
         associationDto.setOwner(userMapper.mapToDto(service.findUser(associationDto.getOwner().getId())));
-        Association association = associationMapper.mapToEntity(associationDto);
 
         LocalDate endDate = associationDto.getStartDate().plusMonths(associationDto.getTotalShares());
-
         associationDto.setEndDate(endDate);
+
+        Association association = associationMapper.mapToEntity(associationDto);
 
         Association associationSaved = associationRepository.save(association);
         associationDto.setId(associationSaved.getId());
         // start call slot service to generate slots
-        associationSlotService.generateInitialSlots(associationSaved);
+        List<AssociationSlotDto> savedSlots = associationSlotService.generateInitialSlots(associationSaved);
         // end call
+
+        // start call installment service to generate installments record for each user
+        installmentService.generateInstallments(association,savedSlots);
+        // end call
+
         return associationDto;
     }
 
@@ -136,6 +145,23 @@ public class AssociationService {
 
     public AssociationStatus statusOfAssociation(UUID associationId) {
         return findAssociation(associationId).getStatus();
+    }
+
+    public void updateCurrentBalanceCollected(UUID assocId,BigDecimal updatedAmount){
+        Association association = findAssociation(assocId);
+        association.setCurrentCollectedBalance(updatedAmount);
+        associationRepository.save(association);
+    }
+
+    public void reAccumulateCurrentBalanceCollected(UUID assocId){
+        Association association = findAssociation(assocId);
+        BigDecimal remainingAmountOfCurrentCollectedBalance = association.getCurrentCollectedBalance().subtract(association.getTotalPoolAmount());
+        association.setCurrentCollectedBalance(remainingAmountOfCurrentCollectedBalance);
+        associationRepository.save(association);
+    }
+
+    public int deductPayoutFromBalance(UUID assocId,BigDecimal amount){
+        return associationRepository.deductPayoutFromBalance(assocId,amount);
     }
     private RuntimeException message() {
         return new RuntimeException("Association Not Found");

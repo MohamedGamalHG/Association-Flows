@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="4-add-column-currenct-collected-balance" author="mohamed.gamal">
+        <addColumn tableName="associations">
+            <column name="current_collected_balance" type="Decimal(12,2)" defaultValue="0.0"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

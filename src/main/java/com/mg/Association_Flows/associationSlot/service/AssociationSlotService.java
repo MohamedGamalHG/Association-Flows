@@ -27,10 +27,17 @@ public class AssociationSlotService {
     private final UserService userService;
     private final AssociationSlotMapper associationSlotMapper;
 
-    public void generateInitialSlots(Association association) {
+    public List<AssociationSlotDto> generateInitialSlots(Association association) {
         //long totalMonth = ChronoUnit.MONTHS.between(association.getStartDate(),association.getEndDate());
         Period totalPeriod = Period.between(association.getStartDate(), association.getEndDate());
         int totalMonths = totalPeriod.getYears()* 12 + totalPeriod.getMonths();
+
+        // for simplicity
+        // i can remove about and just get the total month from association.getTotalShares()
+        // int totalMonths = totalPeriod.getYears()* 12 + totalPeriod.getMonths();
+
+
+
         List<AssociationSlot> associationSlots = new ArrayList<>();
         for (int i = 1; i <= association.getTotalShares(); i++) {
             AssociationSlot associationSlot = new AssociationSlot();
@@ -40,7 +47,11 @@ public class AssociationSlotService {
             associationSlot.setRemainingInstallments(totalMonths);
             associationSlots.add(associationSlot);
         }
-        associationSlotRepository.saveAll(associationSlots);
+        List<AssociationSlot> associationSlotSaved = associationSlotRepository.saveAll(associationSlots);
+
+        return associationSlotSaved.stream()
+                .map(associationSlotMapper::mapToDTO)
+                .toList();
     }
 
     public List<AssociationSlotDto> getAllAssociationSlotsByAssociationId(UUID associationId) {
@@ -86,13 +97,12 @@ public class AssociationSlotService {
         throw new RuntimeException("No such association slot");
     }
 
-    public boolean updateAssociationSlot(UUID associationSlotId, BigDecimal paidAfterConfirmed,Integer numberOfMonthsPaid) {
+    public void updateAssociationSlot(UUID associationSlotId, BigDecimal paidAfterConfirmed,Integer numberOfMonthsPaid) {
         Optional<AssociationSlot> associationSlot = associationSlotRepository.findById(associationSlotId);
         if (associationSlot.isPresent()) {
             associationSlot.get().setTotalPaidSoFar(paidAfterConfirmed);
             associationSlot.get().setRemainingInstallments(associationSlot.get().getRemainingInstallments() - numberOfMonthsPaid);
             associationSlotRepository.save(associationSlot.get());
-            return true;
         }
         throw new RuntimeException("No such association slot");
     }

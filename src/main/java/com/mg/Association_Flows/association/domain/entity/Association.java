@@ -32,4 +32,6 @@ public class Association extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AssociationStatus status;
     private BigDecimal totalPoolAmount; // Total amount received
+
+    private BigDecimal currentCollectedBalance;
 }

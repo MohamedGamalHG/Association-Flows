@@ -5,6 +5,7 @@ import com.mg.Association_Flows.association.service.AssociationService;
 import com.mg.Association_Flows.associationSlot.domain.dtos.AssociationSlotDto;
 import com.mg.Association_Flows.associationSlot.domain.entity.AssociationSlot;
 import com.mg.Association_Flows.associationSlot.service.AssociationSlotService;
+import com.mg.Association_Flows.installment.service.InstallmentService;
 import com.mg.Association_Flows.payment.domain.dto.PaymentDto;
 import com.mg.Association_Flows.payment.domain.entity.Payment;
 import com.mg.Association_Flows.payment.domain.repo.PaymentRepository;
@@ -30,6 +31,7 @@ public class PaymentService {
     private final PaymentMapper paymentMapper;
     private final AssociationSlotService associationSlotService;
     private final AssociationService associationService;
+    private final InstallmentService  installmentService;
 
     public PaymentDto requestToPay(PaymentDto paymentDto) {
         UUID associationId = null;
@@ -38,15 +40,15 @@ public class PaymentService {
         }else
             throw new IllegalArgumentException("Association slot not found");
 
-        BigDecimal numberOfMonthPay = associationService.monthlyAmountOfAssociation(associationId);
+        BigDecimal monthlyAmountOfAssociation = associationService.monthlyAmountOfAssociation(associationId);
 
-        // if the amount that come in request after divid it  to numberOfMonthPay it has any fraction
-        // then it pay number less than the numberOfMonthPay or if pay 3 month for example
+        // if the amount that come in request after divid it  to monthlyAmountOfAssociation it has any fraction
+        // then it pay number less than the monthlyAmountOfAssociation or if pay 3 month for example
         // then it will pay it well because if i divid it then the number will be good no fraction
 
         // i need to check if amount that come not less than , so it should pay the
         // monthly amount or multiplies of monthly amount
-        boolean dividesEvenly = paymentDto.getAmount().remainder(numberOfMonthPay).compareTo(BigDecimal.ZERO) == 0;
+        boolean dividesEvenly = paymentDto.getAmount().remainder(monthlyAmountOfAssociation).compareTo(BigDecimal.ZERO) == 0;
         if (!dividesEvenly)
             throw new RuntimeException("you should pay the monthly amount or multiplies");
 
@@ -60,7 +62,9 @@ public class PaymentService {
         LocalDate startDataOfAssociation = associationService.startDateOfAssociation(associationId);
         LocalDate endDataOfAssociation = associationService.endDateOfAssociation(associationId);
 
-        if(!dateOfPay.isAfter(startDataOfAssociation) || !dateOfPay.isBefore(endDataOfAssociation))
+        if(dateOfPay.isEqual(startDataOfAssociation));
+
+        else if(!dateOfPay.isAfter(startDataOfAssociation) || !dateOfPay.isBefore(endDataOfAssociation))
             throw  new RuntimeException("date of payment request should be between start date & end date of association");
 
 
@@ -81,12 +85,28 @@ public class PaymentService {
             }
 
             BigDecimal totalAmountOfAssociation = associationService.totalPoolAmountOfAssociation(associationId);
+            /*
+             we replace this by the new column in association called currentCollectBalance
+             that will accumulate in it the balance paid until now and after make payout
+             then will reset this row by find the association record and reset it to zero again
             BigDecimal totalAmountPayedUntilNow = paymentRepository.calculateAvailablePool(associationId);
+            */
 
-            if (totalAmountOfAssociation.compareTo(totalAmountPayedUntilNow) < 0)
+            BigDecimal currentCollectBalanceUntilNow = associationService.findAssociation(associationId).getCurrentCollectedBalance();
+            if (currentCollectBalanceUntilNow.compareTo(totalAmountOfAssociation) < 0)
                 throw new RuntimeException("the total number of payed until now not covered to payout");
 
+
+            int updatedRows = associationService.deductPayoutFromBalance(associationId, totalAmountOfAssociation);
+
+            if (updatedRows == 0) {
+                throw new RuntimeException("عذراً، الرصيد الحالي لا يكفي لإتمام عملية الصرف أو تم تحديثه بواسطة مستخدم آخر.");
+            }
+
             associationSlotService.markSlotAsPaidOut(targetSlot.getId());
+
+            // here we reset again the current balance to be zero
+            //associationService.reAccumulateCurrentBalanceCollected(associationId);
 
             return true;
         }catch (Exception e){
@@ -109,25 +129,43 @@ public class PaymentService {
         // should update confirmation_date , status of payment , optional to add note
         Optional<Payment> payment = paymentRepository.findById(paymentId);
         if (payment.isPresent()) {
-            paymentDto.setStatus(PaymentStatus.CONFIRMED); // if not sent but i think it should send it
-            paymentMapper.updatePaymentFromDto(paymentDto, payment.get());
+            if(paymentDto.getStatus().equals(PaymentStatus.CONFIRMED)) {
+                paymentDto.setStatus(PaymentStatus.CONFIRMED); // if not sent, but i think it should send it
+                paymentMapper.updatePaymentFromDto(paymentDto, payment.get());
 
-            BigDecimal numberOfMonthsPay = associationService.monthlyAmountOfAssociation(payment.get()
-                    .getAssociationSlot().
-                    getAssociation().
-                    getId());
+                UUID assocId = payment.get()
+                        .getAssociationSlot().
+                        getAssociation().
+                        getId();
 
-            Integer numberOfMonthsPaidToSubtractFromRemaining = payment.get().getAmount().divide(numberOfMonthsPay, RoundingMode.DOWN).toBigInteger().intValue();
+                UUID assocSlotId = payment.get().getAssociationSlot().getId();
+                BigDecimal amountReceived = payment.get().getAmount();
+                BigDecimal numberOfMonthsPay = payment.get().getAssociationSlot().getAssociation().getMonthlyAmount();
 
-            boolean slotUpdated = associationSlotService.
-                    updateAssociationSlot(payment.get().getAssociationSlot().getId(),
-                            payment.get().getAmount(),
-                            numberOfMonthsPaidToSubtractFromRemaining);
+                Integer numberOfMonthsPaidToSubtractFromRemaining = amountReceived
+                        .divide(numberOfMonthsPay, RoundingMode.DOWN).toBigInteger().intValue();
+
+                 associationSlotService.
+                        updateAssociationSlot(assocSlotId,amountReceived, numberOfMonthsPaidToSubtractFromRemaining);
 
 
-            paymentRepository.save(payment.get());
-            return true;
+                // update the current collected balance in association table by
+                // the amount that confirmed
+                // when user payout then it should subtract from this record the total pool amount
+                // that user will pay again to start from beginning
+
+                associationService.updateCurrentBalanceCollected(assocId, amountReceived);
+
+
+                installmentService.allocateMonthsPaid(assocSlotId,payment.get().getAmount(),payment.get().getTargetMonth());
+
+
+                paymentRepository.save(payment.get());
+                return true;
+            }else
+                throw new RuntimeException("payment not confirmed");
         }
+
         throw new RuntimeException("There is no payment with this id " + paymentId);
     }
 }

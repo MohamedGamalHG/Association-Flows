@@ -24,4 +24,8 @@
 
     <include file="db/changelog/schema_V1/association_slot/006-alter-column-vacant-to-reserved.xml"/>
 
+    <include file="db/changelog/schema_V1/installment/001-create-installments-table.xml"/>
+
+    <include file="db/changelog/schema_V1/association/004-add-column-current-collected-balance.xml"/>
+
 </databaseChangeLog>
