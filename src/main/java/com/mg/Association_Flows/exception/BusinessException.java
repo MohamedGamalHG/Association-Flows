@@ -15,4 +15,10 @@ public abstract class BusinessException extends RuntimeException{
         this.error = error;
     }
 
+    protected BusinessException(String msg, String error) {
+        super(msg);
+        this.httpStatus = HttpStatus.BAD_REQUEST;
+        this.error = error;
+    }
+
 }
