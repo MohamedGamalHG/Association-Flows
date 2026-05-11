@@ -5,8 +5,10 @@ import com.mg.Association_Flows.payment.service.PaymentService;
 import com.mg.Association_Flows.user.domain.entity.User;
 import com.mg.Association_Flows.user.domain.repo.UserRepository;
 import com.mg.Association_Flows.user.domain.dtos.UserDto;
+import com.mg.Association_Flows.user.exception.UserNotFoundException;
 import com.mg.Association_Flows.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,8 +65,8 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(this::message);
     }
 
-    private RuntimeException message() {
-        return new RuntimeException("User Not Found");
+    private UserNotFoundException message() {
+        return new UserNotFoundException("User Not Found", HttpStatus.NOT_FOUND,"User Not Found");
     }
 
 

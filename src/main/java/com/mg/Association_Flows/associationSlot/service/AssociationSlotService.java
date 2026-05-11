@@ -5,10 +5,13 @@ import com.mg.Association_Flows.associationSlot.domain.dtos.AssociationSlotDto;
 import com.mg.Association_Flows.associationSlot.domain.entity.AssociationSlot;
 import com.mg.Association_Flows.associationSlot.domain.repo.AssociationSlotRepository;
 import com.mg.Association_Flows.associationSlot.enums.AssociationSlotStatus;
+import com.mg.Association_Flows.associationSlot.exception.AssociationSlotNotFoundException;
+import com.mg.Association_Flows.associationSlot.exception.AssociationSlotPayoutException;
 import com.mg.Association_Flows.associationSlot.mapper.AssociationSlotMapper;
 import com.mg.Association_Flows.user.domain.entity.User;
 import com.mg.Association_Flows.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -86,7 +89,7 @@ public class AssociationSlotService {
             associationSlotRepository.save(associationSlot);
             return associationSlot;
         }
-        throw new RuntimeException("No such association slot");
+        throw new AssociationSlotNotFoundException("No such association slot", HttpStatus.NOT_FOUND,"Association Slot Not Found");
     }
 
     public AssociationSlotDto getAssociationSlotById(UUID associationSlotId) {
@@ -94,7 +97,7 @@ public class AssociationSlotService {
         if (associationSlot.isPresent()) {
             return  associationSlotMapper.mapToDTO(associationSlot.get());
         }
-        throw new RuntimeException("No such association slot");
+        throw new AssociationSlotNotFoundException("No such association slot", HttpStatus.NOT_FOUND,"Association Slot Not Found");
     }
 
     public void updateAssociationSlot(UUID associationSlotId, BigDecimal paidAfterConfirmed,Integer numberOfMonthsPaid) {
@@ -104,15 +107,15 @@ public class AssociationSlotService {
             associationSlot.get().setRemainingInstallments(associationSlot.get().getRemainingInstallments() - numberOfMonthsPaid);
             associationSlotRepository.save(associationSlot.get());
         }
-        throw new RuntimeException("No such association slot");
+        throw new AssociationSlotNotFoundException("No such association slot", HttpStatus.NOT_FOUND,"Association Slot Not Found");
     }
 
     public void markSlotAsPaidOut(UUID slotId) {
         AssociationSlot slot = associationSlotRepository.findById(slotId)
-                .orElseThrow(() -> new RuntimeException("Slot not found"));
+                .orElseThrow(() -> new AssociationSlotNotFoundException("No such association slot", HttpStatus.NOT_FOUND,"Association Slot Not Found"));
 
         if (slot.getUser() == null) {
-            throw new RuntimeException("Cannot payout an empty slot");
+            throw new AssociationSlotPayoutException("Cannot payout an empty slot",HttpStatus.BAD_REQUEST,"Slot Not Found");
         }
 
         slot.setIsPayoutDone(true);
@@ -125,6 +128,6 @@ public class AssociationSlotService {
         if(associationSlot.isPresent()) {
             return associationSlotMapper.mapToDTO(associationSlot.get());
         }
-        throw new RuntimeException("Slot not found");
+        throw new AssociationSlotNotFoundException("No such association slot", HttpStatus.NOT_FOUND,"Association Slot Not Found");
     }
 }
