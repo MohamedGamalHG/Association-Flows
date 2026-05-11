@@ -1,7 +1,5 @@
 package com.mg.Association_Flows.exception;
 
-import com.mg.Association_Flows.association.exception.AssociationAssignedException;
-import com.mg.Association_Flows.association.exception.AssociationNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +11,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+
+    /*
+
+    without make this two method we make just  parent Business class for exception,
+    and we just use this method below handleBusinessException
 
     @ExceptionHandler(value = {AssociationAssignedException.class })
     public ResponseEntity<Map<String,Object>> handleAssociationAssigned(AssociationAssignedException exception) {
@@ -26,7 +30,14 @@ public class GlobalExceptionHandler {
         Map<String,Object> map = new HashMap<>();
         map.put("msg", initBaseResponse(exception,"Association Not Found",HttpStatus.NOT_FOUND.value()));
         return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+    }*/
+
+    @ExceptionHandler(value = { BusinessException.class })
+    public ResponseEntity<BaseExceptionDto> handleBusinessException(BusinessException ex) {
+        BaseExceptionDto response = initBaseResponse(ex,ex.getError(),ex.getHttpStatus().value());
+        return ResponseEntity.status(ex.getHttpStatus()).body(response);
     }
+
 
 
     @ExceptionHandler(value = { Exception.class })
