@@ -4,6 +4,8 @@ import com.mg.Association_Flows.association.domain.dtos.AssociationDto;
 import com.mg.Association_Flows.association.domain.entity.Association;
 import com.mg.Association_Flows.association.domain.repo.AssociationRepository;
 import com.mg.Association_Flows.association.enums.AssociationStatus;
+import com.mg.Association_Flows.association.exception.AssociationAssignedException;
+import com.mg.Association_Flows.association.exception.AssociationNotFoundException;
 import com.mg.Association_Flows.association.mapper.AssociationMapper;
 import com.mg.Association_Flows.associationSlot.domain.dtos.AssociationSlotDto;
 import com.mg.Association_Flows.associationSlot.service.AssociationSlotService;
@@ -15,6 +17,7 @@ import com.mg.Association_Flows.user.mapper.UserMapper;
 import com.mg.Association_Flows.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -113,7 +116,7 @@ public class AssociationService {
     private void handleAssociationAssign(UUID id) {
         boolean checked = associationSlotService.checkIfAnyUserAssignToOrder(id);
         if (checked)
-            throw new RuntimeException("This association has already been assigned we can'\t make update");
+            throw new AssociationAssignedException("This association has already been assigned we can'\\t make update",HttpStatus.BAD_REQUEST,"Association already been assigned");
 
     }
 
@@ -127,24 +130,8 @@ public class AssociationService {
         return associationRepository.findById(id).orElseThrow(this::message);
     }
 
-    public BigDecimal totalPoolAmountOfAssociation(UUID associationId) {
-        return findAssociation(associationId).getTotalPoolAmount();
-    }
-
-    public BigDecimal monthlyAmountOfAssociation(UUID associationId) {
-        return findAssociation(associationId).getMonthlyAmount();
-    }
-
-    public LocalDate startDateOfAssociation(UUID associationId) {
-        return findAssociation(associationId).getStartDate();
-    }
-
-    public LocalDate endDateOfAssociation(UUID associationId) {
-        return findAssociation(associationId).getEndDate();
-    }
-
-    public AssociationStatus statusOfAssociation(UUID associationId) {
-        return findAssociation(associationId).getStatus();
+    public AssociationDto findAssociationById(UUID id) {
+        return associationMapper.mapToDto(findAssociation(id));
     }
 
     public void updateCurrentBalanceCollected(UUID assocId,BigDecimal updatedAmount){
@@ -164,7 +151,7 @@ public class AssociationService {
         return associationRepository.deductPayoutFromBalance(assocId,amount);
     }
     private RuntimeException message() {
-        return new RuntimeException("Association Not Found");
+        return new AssociationNotFoundException("Association Not Found", HttpStatus.NOT_FOUND,"Not Found");
     }
 
     private void handleTotalPool(AssociationDto associationDto, Association association) {
