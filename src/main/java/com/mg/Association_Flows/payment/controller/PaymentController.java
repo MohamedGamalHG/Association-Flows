@@ -4,6 +4,7 @@ import com.mg.Association_Flows.payment.domain.dto.PaymentDto;
 import com.mg.Association_Flows.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/payment")
 @RequiredArgsConstructor
+@Validated
 public class PaymentController {
 
     private final PaymentService paymentService;

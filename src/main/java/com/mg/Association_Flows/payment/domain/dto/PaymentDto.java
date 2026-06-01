@@ -6,6 +6,7 @@ import com.mg.Association_Flows.payment.enums.PaymentMethod;
 import com.mg.Association_Flows.payment.enums.PaymentStatus;
 import com.mg.Association_Flows.util.BaseDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class PaymentDto extends BaseDto {
     // we link this payment by the association slot because if i enter with more than one association slot
     // like slot number 1 and slot number 11 so if the association is 2000 it should pay 4000 to this slots
     private AssociationSlotDto associationSlot;
+    @Positive
     private BigDecimal amount;
     private Integer targetMonth; // الشهر الي بيدفع عشانه
     private Timestamp paymentDate;

@@ -1,12 +1,17 @@
 package com.mg.Association_Flows.exception;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -38,6 +43,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getHttpStatus()).body(response);
     }
 
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ResponseEntity<BaseExceptionDto> handleMethodArgException(MethodArgumentNotValidException ex){
+        BaseExceptionDto response = initMapErrorBaseResponse(ex,ex.getBindingResult().getFieldErrors(),HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(value = {ConstraintViolationException.class})
+    public ResponseEntity<BaseExceptionDto> handleConstrainViolationException(ConstraintViolationException ex){
+        BaseExceptionDto response = initBaseResponse(ex,ex.getErrorMessage(),HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
 
 
     @ExceptionHandler(value = { Exception.class })
@@ -53,6 +69,25 @@ public class GlobalExceptionHandler {
         baseExceptionDto.setTimestamp(LocalDateTime.now());
         baseExceptionDto.setStatus(status);
         baseExceptionDto.setError(error);
+        return baseExceptionDto;
+    }
+
+    protected BaseExceptionDto initMapErrorBaseResponse(Exception ex, List<FieldError> fieldError, int status) {
+        BaseExceptionDto baseExceptionDto = new BaseExceptionDto();
+        baseExceptionDto.setMessage(ex.getMessage());
+        baseExceptionDto.setTimestamp(LocalDateTime.now());
+        baseExceptionDto.setStatus(status);
+
+        Map<String,Object> errors = new LinkedHashMap<>();
+
+        errors.put("errors",fieldError
+                .stream()
+                .map(err ->
+                        Map.of("field",err.getField(),
+                                "message",err.getDefaultMessage()))
+                .toList());
+
+        baseExceptionDto.setErrors(errors);
         return baseExceptionDto;
     }
 }

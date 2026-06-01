@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -15,5 +18,6 @@ public class BaseExceptionDto {
     private String message;
     private LocalDateTime timestamp;
     private String error;
+    private Map<String, Object> errors;
     private int status;
 }

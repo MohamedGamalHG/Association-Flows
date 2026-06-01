@@ -5,6 +5,9 @@ import com.mg.Association_Flows.user.domain.dtos.UserDto;
 import com.mg.Association_Flows.user.domain.entity.User;
 import com.mg.Association_Flows.util.BaseDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +24,10 @@ public class AssociationDto extends BaseDto {
 
     private UserDto owner;
     private String title;
+    @Positive
     private BigDecimal monthlyAmount; // this what customer pay every month
     private Integer totalShares; // عدد الاسهم في الجمعيه زي مثلا 20 اسم كدا يعني
+    @FutureOrPresent
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer collectionDay; // The day designated for collecting the money
