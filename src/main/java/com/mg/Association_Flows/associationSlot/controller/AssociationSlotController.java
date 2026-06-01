@@ -5,6 +5,7 @@ import com.mg.Association_Flows.associationSlot.domain.entity.AssociationSlot;
 import com.mg.Association_Flows.associationSlot.service.AssociationSlotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/association-slot")
 @RequiredArgsConstructor
+@Validated
 public class AssociationSlotController {
 
     private final AssociationSlotService associationSlotService;
