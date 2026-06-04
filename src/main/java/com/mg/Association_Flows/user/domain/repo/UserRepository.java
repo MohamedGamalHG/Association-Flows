@@ -12,3 +12,5 @@ public interface UserRepository extends BaseRepository<User> {
 
     Optional<User> findByPhoneNumber(String phone);
 }
+
+
