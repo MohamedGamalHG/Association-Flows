@@ -22,7 +22,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity implements UserDetails {
+public class User extends BaseEntity  {
 
     @NotNullBlankValidation
     private String fullName;
@@ -40,19 +40,9 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(RoleType.User.name()),
                 new SimpleGrantedAuthority(RoleType.Admin.name()));
     }
 
-    @Override
-    public @Nullable String getPassword() {
-        return passwordHash;
-    }
-
-    @Override
-    public String getUsername() {
-        return phoneNumber;
-    }
 }
